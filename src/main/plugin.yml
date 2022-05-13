@@ -1,0 +1,10 @@
+name: SpiralCarver
+api-version: "1.18"
+depend: [WorldEdit]
+version: "1.0"
+description: Carve spirals into mountains
+author: phonis
+main: dev.phonis.SpiralCarver.SpiralCarver
+commands:
+  carve:
+    description: Hard-coded spiral generator

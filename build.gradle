@@ -1,0 +1,25 @@
+group 'dev.phonis'
+version '1.0'
+
+repositories {
+    mavenCentral()
+    maven { url 'https://maven.enginehub.org/repo/' }
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
+}
+
+apply plugin: 'java'
+
+dependencies {
+    compileClasspath 'com.sk89q.worldedit:worldedit-bukkit:7.2.9'
+    compileClasspath 'org.bukkit:bukkit:1.15.2-R0.1-SNAPSHOT'
+}
+
+jar {
+    archiveBaseName.set('SpiralCarver')
+    archiveClassifier.set('')
+    archiveVersion.set('')
+
+    from('src/main') {
+        include 'plugin.yml'
+    }
+}
