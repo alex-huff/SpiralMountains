@@ -60,9 +60,7 @@ public class AutoExpandingCuboidByteWorld implements CuboidByteWorld
     public byte at(int x, int y, int z)
     {
         if (this.inBounds(x, y, z))
-        {
             return this.world[this.getRealIndexOfX(x)][this.getRealIndexOfY(y)][this.getRealIndexOfZ(z)];
-        }
 
         return 0;
     }

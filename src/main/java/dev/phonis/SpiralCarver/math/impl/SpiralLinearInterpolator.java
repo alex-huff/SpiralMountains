@@ -1,9 +1,9 @@
 package dev.phonis.SpiralCarver.math.impl;
 
-import dev.phonis.SpiralCarver.math.LinearInterpolator;
+import dev.phonis.SpiralCarver.math.Interpolator;
 import dev.phonis.SpiralCarver.math.SpiralSample;
 
-public class SpiralLinearInterpolator implements LinearInterpolator<SpiralSample>
+public class SpiralLinearInterpolator implements Interpolator<SpiralSample>
 {
 
     private final DoubleLinearInterpolator heightInterpolator;
@@ -18,12 +18,12 @@ public class SpiralLinearInterpolator implements LinearInterpolator<SpiralSample
     }
 
     @Override
-    public SpiralSample lerp(double percent)
+    public SpiralSample interpolate(double percent)
     {
         return new SpiralSample(
-            this.heightInterpolator.lerp(percent),
-            this.radiusInterpolator.lerp(percent),
-            this.pathWidthInterpolator.lerp(percent)
+            this.heightInterpolator.interpolate(percent),
+            this.radiusInterpolator.interpolate(percent),
+            this.pathWidthInterpolator.interpolate(percent)
         );
     }
 

@@ -60,20 +60,22 @@ public class CommandCarve extends SubCommand
             this.javaPlugin,
             () ->
             {
-                CuboidByteWorld cuboidByteWorld = new AutoExpandingCuboidByteWorld(256);
+                CuboidByteWorld cuboidByteWorld = new AutoExpandingCuboidByteWorld(15);
                 SpiralSample[] spiral = new SpiralSample[]
-                {
-                    new SpiralSample(0, 45, 10),
-                    new SpiralSample(10, 35, 8),
-                    new SpiralSample(20, 27, 6),
-                    new SpiralSample(30, 21, 4),
-                    new SpiralSample(40, 17, 2),
-                    new SpiralSample(40, 15, 1)
-                };
+                    {
+                        new SpiralSample(0, 300, 100),
+                        new SpiralSample(20, 200, 50),
+                        new SpiralSample(40, 150, 50),
+                        new SpiralSample(60, 100, 50),
+                        new SpiralSample(80, 50, 25),
+                        new SpiralSample(100, 25, 25)
+                    };
                 SpiralUtil.fillCuboidByteWorldWithSpiral(cuboidByteWorld, spiral);
                 final Clipboard clipboard = CuboidByteWorldUtil.cuboidByteWorldToClipboard(cuboidByteWorld);
-                Bukkit.getScheduler().scheduleSyncDelayedTask(this.javaPlugin, () -> this.loadClipboard(playerUUID,
-                                                                                                 clipboard));
+                Bukkit.getScheduler().scheduleSyncDelayedTask(this.javaPlugin, () -> this.loadClipboard(
+                    playerUUID,
+                    clipboard
+                ));
             }
         );
     }
@@ -82,7 +84,7 @@ public class CommandCarve extends SubCommand
     {
         Plugin          plugin = Bukkit.getPluginManager().getPlugin("WorldEdit");
         WorldEditPlugin wep;
-        Player player = Bukkit.getPlayer(playerUUID);
+        Player          player = Bukkit.getPlayer(playerUUID);
 
         if (plugin instanceof WorldEditPlugin)
         {
@@ -95,7 +97,8 @@ public class CommandCarve extends SubCommand
         }
         LocalSession localSession = wep.getSession(player);
         localSession.setClipboard(new ClipboardHolder(clipboard));
-        if (player != null) player.sendMessage(ChatColor.GREEN + "Clipboard loaded. Dimensions: " + clipboard.getDimensions().toString());
+        if (player != null) player.sendMessage(
+            ChatColor.BLUE + "Clipboard loaded. Dimensions: " + ChatColor.WHITE + clipboard.getDimensions().toString());
     }
 
     private void timeCuboidByteWorld(CuboidByteWorld byteWorld, String typeName)
@@ -107,7 +110,7 @@ public class CommandCarve extends SubCommand
             {
                 for (int z = -256; z <= 256; z++)
                 {
-                    byteWorld.put((byte) x, x, y, z);
+                    byteWorld.put((byte) (x + y + z), x, y, z);
                 }
             }
         }
@@ -124,7 +127,7 @@ public class CommandCarve extends SubCommand
             {
                 for (int z = -256; z <= 256; z++)
                 {
-                    if (byteWorld.at(x, y, z) != (byte) x)
+                    if (byteWorld.at(x, y, z) != (byte) (x + y + z))
                     {
                         Bukkit.broadcastMessage(typeName + " failed.");
                         return;

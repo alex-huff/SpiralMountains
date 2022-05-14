@@ -1,9 +1,7 @@
 package dev.phonis.SpiralCarver.spiral;
 
-import com.sk89q.worldedit.math.BlockVector3;
 import dev.phonis.SpiralCarver.canvas.CuboidByteWorld;
 import dev.phonis.SpiralCarver.math.SpiralSample;
-import dev.phonis.SpiralCarver.math.impl.DoubleLinearInterpolator;
 import dev.phonis.SpiralCarver.math.impl.SpiralLinearInterpolator;
 import dev.phonis.SpiralCarver.math.impl.UnitVectorLinearInterpolator;
 import org.bukkit.util.BoundingBox;
@@ -37,9 +35,9 @@ public class SpiralUtil
             for (int s = 1; s <= numSamples; s++)
             {
                 double       percentage       = (1.0D * s / numSamples);
-                SpiralSample lerpedSample     = spiralLerper.lerp(percentage);
-                SpiralSample lastLerpedSample = (lastSpiralLerper == null) ? null : lastSpiralLerper.lerp(percentage);
-                Vector       unitVector       = unitVectorLerper.lerp(percentage);
+                SpiralSample lerpedSample     = spiralLerper.interpolate(percentage);
+                SpiralSample lastLerpedSample = (lastSpiralLerper == null) ? null : lastSpiralLerper.interpolate(percentage);
+                Vector       unitVector       = unitVectorLerper.interpolate(percentage);
                 Vector pathStart = unitVector.clone().multiply(lerpedSample.radius() - lerpedSample.pathWidth())
                                              .setY(lerpedSample.height());
                 Vector pathEnd = unitVector.clone().multiply(lerpedSample.radius()).setY(lerpedSample.height());
@@ -74,19 +72,13 @@ public class SpiralUtil
         double      distance         = start.distance(finish);
         BoundingBox blockBoundingBox = new BoundingBox();
         for (int x = minX; x <= maxX; x++)
-        {
             for (int y = minY; y <= maxY; y++)
-            {
                 for (int z = minZ; z <= maxZ; z++)
                 {
                     blockBoundingBox.resize(x, y, z, x + 1, y + 1, z + 1);
                     if (blockBoundingBox.rayTrace(start, direction, distance) != null)
-                    {
                         cuboidByteWorld.put((byte) 0x1, x, y, z);
-                    }
                 }
-            }
-        }
     }
 
 }

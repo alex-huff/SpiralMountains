@@ -1,8 +1,8 @@
 package dev.phonis.SpiralCarver.math.impl;
 
-import dev.phonis.SpiralCarver.math.LinearInterpolator;
+import dev.phonis.SpiralCarver.math.Interpolator;
 
-public class DoubleLinearInterpolator implements LinearInterpolator<Double>
+public class DoubleLinearInterpolator implements Interpolator<Double>
 {
 
     private final double start;
@@ -15,7 +15,7 @@ public class DoubleLinearInterpolator implements LinearInterpolator<Double>
     }
 
     @Override
-    public Double lerp(double percent)
+    public Double interpolate(double percent)
     {
         return this.start + percent * range;
     }
