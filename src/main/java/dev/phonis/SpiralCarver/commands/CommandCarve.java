@@ -64,11 +64,11 @@ public class CommandCarve extends SubCommand
                 SpiralSample[] spiral = new SpiralSample[]
                     {
                         new SpiralSample(0, 300, 100),
-                        new SpiralSample(20, 200, 50),
-                        new SpiralSample(40, 150, 50),
-                        new SpiralSample(60, 100, 50),
-                        new SpiralSample(80, 50, 25),
-                        new SpiralSample(100, 25, 25)
+                        new SpiralSample(20, 210, 50),
+                        new SpiralSample(40, 170, 50),
+                        new SpiralSample(80, 125, 50),
+                        new SpiralSample(120, 80, 25),
+                        new SpiralSample(160, 60, 25)
                     };
                 SpiralUtil.fillCuboidByteWorldWithSpiral(cuboidByteWorld, spiral);
                 final Clipboard clipboard = CuboidByteWorldUtil.cuboidByteWorldToClipboard(cuboidByteWorld);
@@ -87,9 +87,7 @@ public class CommandCarve extends SubCommand
         Player          player = Bukkit.getPlayer(playerUUID);
 
         if (plugin instanceof WorldEditPlugin)
-        {
             wep = (WorldEditPlugin) plugin;
-        }
         else
         {
             if (player != null) player.sendMessage("WorldEdit not installed.");
@@ -105,15 +103,9 @@ public class CommandCarve extends SubCommand
     {
         long startTime = System.currentTimeMillis();
         for (int x = -256; x <= 256; x++)
-        {
             for (int y = -256; y <= 256; y++)
-            {
                 for (int z = -256; z <= 256; z++)
-                {
                     byteWorld.put((byte) (x + y + z), x, y, z);
-                }
-            }
-        }
         long endTime = System.currentTimeMillis();
         Bukkit.broadcastMessage(typeName + " in : " + (endTime - startTime) / 1000D + " seconds.");
     }
@@ -122,19 +114,13 @@ public class CommandCarve extends SubCommand
     {
         long startTime = System.currentTimeMillis();
         for (int x = -256; x <= 256; x++)
-        {
             for (int y = -256; y <= 256; y++)
-            {
                 for (int z = -256; z <= 256; z++)
-                {
                     if (byteWorld.at(x, y, z) != (byte) (x + y + z))
                     {
                         Bukkit.broadcastMessage(typeName + " failed.");
                         return;
                     }
-                }
-            }
-        }
         long endTime = System.currentTimeMillis();
         Bukkit.broadcastMessage(typeName + " passed in " + (endTime - startTime) / 1000D + " seconds.");
     }
