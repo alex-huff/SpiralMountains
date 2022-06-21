@@ -1,8 +1,9 @@
 package dev.phonis.SpiralCarver.math;
 
-public interface Interpolator<A>
+public
+interface Interpolator<A>
 {
 
-    A interpolate(double percent);
+	A interpolate(double percent);
 
 }
