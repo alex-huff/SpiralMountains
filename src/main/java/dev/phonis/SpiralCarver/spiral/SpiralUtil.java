@@ -40,7 +40,7 @@ class SpiralUtil
 			int    numSamples    = (int) (arcLength * 20);
 			SpiralUtil.drawPath(cuboidByteWorld, spiralLerper, numSamples);
 			SpiralUtil.drawWall(cuboidByteWorld, spiralLerper, lastSpiralLerper, numSamples);
-			SpiralUtil.drawAqueducts(cuboidByteWorld, lastSpiralLerper, currentSample, nextSample);
+			// SpiralUtil.drawAqueducts(cuboidByteWorld, lastSpiralLerper, currentSample, nextSample);
 			lastSample = currentSample;
 		}
 	}
@@ -85,6 +85,98 @@ class SpiralUtil
 			SpiralUtil.drawLine(
 				cuboidByteWorld, pathStart, pathEnd, CommandCarve.pathStart, CommandCarve.pathEnd, true);
 		}
+
+		SpiralUtil.drawInnerPath(cuboidByteWorld, spiralLerper);
+	}
+
+	private static
+	void drawInnerPath(
+		CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator spiralLerper
+	)
+	{
+		final double targetSpaceBetweenLamps = 6 * Math.sqrt(2);
+		final double offWall = Math.sqrt(2);
+		// final double targetSpaceBetweenLamps = .05;
+		// Assuming height/radius are ints at start and end of sample
+		SpiralSample startSample           = spiralLerper.interpolate(0);
+		SpiralSample endSample             = spiralLerper.interpolate(1);
+		int          startHeight           = (int) startSample.height();
+		int          endHeight             = (int) endSample.height();
+		double       startPathCenterRadius = startSample.radius() - startSample.pathWidth() / 2 + offWall;
+		double       endPathCenterRadius   = endSample.radius() - endSample.pathWidth() / 2 + offWall;
+		for (int h = startHeight; h < endHeight; h++)
+		{
+			int    segmentStart = h;
+			int    segmentEnd   = h + 1;
+			double startPercent = SpiralUtil.getPercentThroughSpiralAtHeight(startHeight, endHeight, segmentStart);
+			double endPercent   = SpiralUtil.getPercentThroughSpiralAtHeight(startHeight, endHeight, segmentEnd);
+			double startLength = SpiralUtil.getLengthThroughSpiralAtPercent(
+				startPathCenterRadius, endPathCenterRadius, startPercent);
+			double endLength = SpiralUtil.getLengthThroughSpiralAtPercent(
+				startPathCenterRadius, endPathCenterRadius, endPercent);
+			double segmentLength = endLength - startLength;
+			// numSources * targetSpaceBetweenLamps = segmentLength
+			double numSourcesApproximation = segmentLength / targetSpaceBetweenLamps;
+			int    realNumSources          = (int) Math.round(numSourcesApproximation);
+			// realNumSources * realSpaceBetweenLamps = segmentLength
+			double realSpaceBetweenLamps = segmentLength / realNumSources;
+			for (int s = 0; s < realNumSources; s++)
+			{
+				double lengthAtSource = startLength + (realSpaceBetweenLamps / 2) + realSpaceBetweenLamps * s;
+				double percentAtSource = SpiralUtil.getPercentThroughSpiralAtLength(
+					startPathCenterRadius, endPathCenterRadius, lengthAtSource);
+				SpiralUtil.placeLightSourceAtPercentThroughSpiral(cuboidByteWorld, spiralLerper, percentAtSource, offWall);
+			}
+		}
+	}
+
+	private static
+	void placeLightSourceAtPercentThroughSpiral(
+		CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator spiralLerper, double percent, double offWall
+	)
+	{
+		final double                 minInnerPathLength       = 6;
+		final double                 minOuterPathForInnerPath = 10;
+		UnitVectorLinearInterpolator unitVectorLerper         = new UnitVectorLinearInterpolator();
+		SpiralSample                 sourceSample             = spiralLerper.interpolate(percent);
+		double                       thirdOfPathWidth         = sourceSample.pathWidth() / 3;
+		double                       innerPathWidth           = Math.max(thirdOfPathWidth, minInnerPathLength);
+		Vector                       unitVector               = unitVectorLerper.interpolate(percent);
+		double                       sourceHeight             = Math.ceil(sourceSample.height());
+		if (sourceSample.pathWidth() <= minOuterPathForInnerPath)
+		{
+			double middleRadius = sourceSample.radius() - sourceSample.pathWidth() / 4;
+			Vector sourcePosition = unitVector.clone().multiply(middleRadius).setY(sourceHeight);
+			SpiralUtil.drawPathLightSourceAt(cuboidByteWorld, sourcePosition);
+			return;
+		}
+		double leftoverWidth     = sourceSample.pathWidth() - innerPathWidth;
+		double sourceOneRadius   = (sourceSample.radius() - sourceSample.pathWidth()) + leftoverWidth / 2 + offWall;
+		double sourceTwoRadius   = sourceOneRadius + innerPathWidth;
+		Vector sourceOnePosition = unitVector.clone().multiply(sourceOneRadius).setY(sourceHeight);
+		Vector sourceTwoPosition = unitVector.clone().multiply(sourceTwoRadius).setY(sourceHeight);
+		SpiralUtil.drawPathLightSourceAt(cuboidByteWorld, sourceOnePosition);
+		SpiralUtil.drawPathLightSourceAt(cuboidByteWorld, sourceTwoPosition);
+	}
+
+	private static
+	void drawPathLightSourceAt(CuboidByteWorld cuboidByteWorld, Vector vector)
+	{
+		int blockX = (int) Math.floor(vector.getX());
+		int blockY = (int) Math.floor(vector.getY());
+		int blockZ = (int) Math.floor(vector.getZ());
+		cuboidByteWorld.put(CommandCarve.lightSourceBase, blockX, blockY, blockZ);
+		cuboidByteWorld.put(CommandCarve.lightSource, blockX, blockY + 1, blockZ);
+	}
+
+	private static
+	double getPercentThroughSpiralAtHeight(double startHeight, double endHeight, double height)
+	{
+		double range = endHeight - startHeight;
+		// startHeight + percent * range = height
+		// percent * range = height - startHeight
+		// percent = (height - startHeight) / range
+		return (height - startHeight) / range;
 	}
 
 	private static
@@ -106,8 +198,8 @@ class SpiralUtil
 		);
 		SpiralLinearInterpolator currentSpiralLerper = new SpiralLinearInterpolator(currentSample, nextSample);
 
-		SpiralUtil.drawAllignedAqueducts(cuboidByteWorld, aqueductWidth, aqueductHeight, aqueductStart, aqueductEnd,
-										 currentSpiralLerper
+		SpiralUtil.drawAlignedAqueducts(cuboidByteWorld, aqueductWidth, aqueductHeight, aqueductStart, aqueductEnd,
+										currentSpiralLerper
 		);
 		SpiralUtil.drawOffsetAqueducts(cuboidByteWorld, aqueductWidth, aqueductHeight, aqueductStart, aqueductEnd,
 									   currentSpiralLerper
@@ -115,7 +207,7 @@ class SpiralUtil
 	}
 
 	private static
-	void drawAllignedAqueducts(
+	void drawAlignedAqueducts(
 		CuboidByteWorld cuboidByteWorld, double aqueductWidth, double aqueductHeight, SpiralSample aqueductStart,
 		SpiralSample aqueductEnd, SpiralLinearInterpolator currentSpiralLerper
 	)
@@ -305,6 +397,12 @@ class SpiralUtil
 	}
 
 	private static
+	double getLengthThroughSpiralAtPercent(double startRadius, double endRadius, double percent)
+	{
+		return 2 * Math.PI * ((2 * startRadius + percent * (endRadius - startRadius)) / 2) * percent;
+	}
+
+	private static
 	double getPercentThroughSpiralAtLength(double startRadius, double endRadius, double length)
 	{
 		double deltaRadius = endRadius - startRadius;
@@ -316,7 +414,7 @@ class SpiralUtil
 
 	private static
 	void drawLine(
-		CuboidByteWorld cuboidByteWorld, Vector start, Vector finish, int randStart, int randEnd, boolean step
+		CuboidByteWorld cuboidByteWorld, Vector start, Vector finish, byte randStart, byte randEnd, boolean step
 	)
 	{
 		int         startX           = (int) Math.floor(start.getX());

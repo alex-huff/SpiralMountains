@@ -53,40 +53,55 @@ class CommandCarve extends SubCommand
 		};
 
 	public static BlockState[] materials;
-	public static int          wallStart;
-	public static int          wallEnd;
-	public static int          pathStart;
-	public static int          pathEnd;
-	public static int          aqueductStart;
-	public static int          aqueductEnd;
-	public static int          slab;
+	public static byte         wallStart;
+	public static byte         wallEnd;
+	public static byte         pathStart;
+	public static byte         pathEnd;
+	public static byte         aqueductStart;
+	public static byte         aqueductEnd;
+	public static byte         slab;
+	public static byte         lightSourceBase;
+	public static byte         lightSource;
 
 	static
 	{
 		CommandCarve.materials    = new BlockState[1 + CommandCarve.wallMaterials.length +
 												   CommandCarve.pathMaterials.length +
-												   CommandCarve.aqueductMaterials.length + 1];
+												   CommandCarve.aqueductMaterials.length + 3];
 		CommandCarve.materials[0] = FuzzyBlockState.builder().type(BukkitAdapter.asBlockType(Material.COBBLESTONE))
 												   .build();
 		CommandCarve.wallStart    = 1;
 		System.arraycopy(CommandCarve.wallMaterials, 0, CommandCarve.materials, CommandCarve.wallStart,
 						 CommandCarve.wallMaterials.length
 		);
-		CommandCarve.wallEnd   = CommandCarve.wallMaterials.length;
-		CommandCarve.pathStart = CommandCarve.wallEnd + 1;
+		CommandCarve.wallEnd   = (byte) CommandCarve.wallMaterials.length;
+		CommandCarve.pathStart = (byte) (CommandCarve.wallEnd + 1);
 		System.arraycopy(CommandCarve.pathMaterials, 0, CommandCarve.materials, CommandCarve.pathStart,
 						 CommandCarve.pathMaterials.length
 		);
-		CommandCarve.pathEnd       = CommandCarve.pathStart + CommandCarve.pathMaterials.length - 1;
-		CommandCarve.aqueductStart = pathEnd + 1;
+		CommandCarve.pathEnd       = (byte) (CommandCarve.pathStart + CommandCarve.pathMaterials.length - 1);
+		CommandCarve.aqueductStart = (byte) (pathEnd + 1);
 		System.arraycopy(CommandCarve.aqueductMaterials, 0, CommandCarve.materials, CommandCarve.aqueductStart,
 						 CommandCarve.aqueductMaterials.length
 		);
-		CommandCarve.aqueductEnd                  = CommandCarve.aqueductStart + CommandCarve.aqueductMaterials.length -
-													1;
-		CommandCarve.slab                         = CommandCarve.aqueductEnd + 1;
-		CommandCarve.materials[CommandCarve.slab] = FuzzyBlockState.builder().type(
+		CommandCarve.aqueductEnd                             = (byte) (
+			CommandCarve.aqueductStart + CommandCarve.aqueductMaterials.length - 1
+		);
+		CommandCarve.slab                                    = (byte) (
+			CommandCarve.aqueductEnd + 1
+		);
+		CommandCarve.materials[CommandCarve.slab]            = FuzzyBlockState.builder().type(
 			BukkitAdapter.asBlockType(Material.POLISHED_DEEPSLATE_SLAB)).build();
+		CommandCarve.lightSourceBase                         = (byte) (
+			CommandCarve.slab + 1
+		);
+		CommandCarve.materials[CommandCarve.lightSourceBase] = FuzzyBlockState.builder().type(
+			BukkitAdapter.asBlockType(Material.STONE_BRICK_WALL)).build().getFullState();
+		CommandCarve.lightSource                             = (byte) (
+			CommandCarve.lightSourceBase + 1
+		);
+		CommandCarve.materials[CommandCarve.lightSource]     = FuzzyBlockState.builder().type(
+			BukkitAdapter.asBlockType(Material.LANTERN)).build().getFullState();
 	}
 
 	private final JavaPlugin javaPlugin;
