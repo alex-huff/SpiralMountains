@@ -202,18 +202,16 @@ class SubCommand implements CommandExecutor, TabCompleter
 
 	@Override
 	public
-	List<String> onTabComplete(
-		@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String alias, @Nonnull String[] args
-	)
+	List<String> onTabComplete(@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String alias,
+							   @Nonnull String[] args)
 	{
 		return this.tabComplete(sender, alias, SubCommand.arrayToLower(args));
 	}
 
 	@Override
 	public
-	boolean onCommand(
-		@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String label, @Nonnull String[] args
-	)
+	boolean onCommand(@Nonnull CommandSender sender, @Nonnull Command cmd, @Nonnull String label,
+					  @Nonnull String[] args)
 	{
 		try
 		{

@@ -72,18 +72,15 @@ class CommandCarve extends SubCommand
 												   .build();
 		CommandCarve.wallStart    = 1;
 		System.arraycopy(CommandCarve.wallMaterials, 0, CommandCarve.materials, CommandCarve.wallStart,
-						 CommandCarve.wallMaterials.length
-		);
+			CommandCarve.wallMaterials.length);
 		CommandCarve.wallEnd   = (byte) CommandCarve.wallMaterials.length;
 		CommandCarve.pathStart = (byte) (CommandCarve.wallEnd + 1);
 		System.arraycopy(CommandCarve.pathMaterials, 0, CommandCarve.materials, CommandCarve.pathStart,
-						 CommandCarve.pathMaterials.length
-		);
+			CommandCarve.pathMaterials.length);
 		CommandCarve.pathEnd       = (byte) (CommandCarve.pathStart + CommandCarve.pathMaterials.length - 1);
 		CommandCarve.aqueductStart = (byte) (pathEnd + 1);
 		System.arraycopy(CommandCarve.aqueductMaterials, 0, CommandCarve.materials, CommandCarve.aqueductStart,
-						 CommandCarve.aqueductMaterials.length
-		);
+			CommandCarve.aqueductMaterials.length);
 		CommandCarve.aqueductEnd                             = (byte) (
 			CommandCarve.aqueductStart + CommandCarve.aqueductMaterials.length - 1
 		);
@@ -165,8 +162,8 @@ class CommandCarve extends SubCommand
 			try
 			{
 				SpiralUtil.fillCuboidByteWorldWithSpiral(cuboidByteWorld, samples);
-				final Clipboard clipboard = CuboidByteWorldUtil.cuboidByteWorldToClipboard(
-					cuboidByteWorld, CommandCarve.materials);
+				final Clipboard clipboard = CuboidByteWorldUtil.cuboidByteWorldToClipboard(cuboidByteWorld,
+					CommandCarve.materials);
 				Bukkit.getScheduler()
 					  .scheduleSyncDelayedTask(this.javaPlugin, () -> this.loadClipboard(playerUUID, clipboard));
 			}

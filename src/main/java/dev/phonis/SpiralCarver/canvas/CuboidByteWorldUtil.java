@@ -14,14 +14,9 @@ class CuboidByteWorldUtil
 	public static
 	Clipboard cuboidByteWorldToClipboard(CuboidByteWorld cuboidByteWorld, BlockState[] palette)
 	{
-		CuboidRegion cuboidRegion = new CuboidRegion(
-			BlockVector3.ZERO,
-			BlockVector3.at(
-				cuboidByteWorld.getLogicalXAxisSize() - 1,
-				cuboidByteWorld.getLogicalYAxisSize() - 1,
-				cuboidByteWorld.getLogicalXAxisSize() - 1
-			)
-		);
+		CuboidRegion cuboidRegion = new CuboidRegion(BlockVector3.ZERO,
+			BlockVector3.at(cuboidByteWorld.getLogicalXAxisSize() - 1, cuboidByteWorld.getLogicalYAxisSize() - 1,
+				cuboidByteWorld.getLogicalXAxisSize() - 1));
 		BlockArrayClipboard blockArrayClipboard = new BlockArrayClipboard(cuboidRegion);
 		for (int x = cuboidByteWorld.getMinX(); x <= cuboidByteWorld.getMaxX(); x++)
 		{
@@ -35,13 +30,10 @@ class CuboidByteWorldUtil
 					try
 					{
 						byte block = cuboidByteWorld.at(x, y, z);
-                        if (block != 0)
-                        {
-                            blockArrayClipboard.setBlock(
-                                BlockVector3.at(xIndex, yIndex, zIndex),
-                                palette[block]
-                            );
-                        }
+						if (block != 0)
+						{
+							blockArrayClipboard.setBlock(BlockVector3.at(xIndex, yIndex, zIndex), palette[block]);
+						}
 					}
 					catch (WorldEditException ignored)
 					{

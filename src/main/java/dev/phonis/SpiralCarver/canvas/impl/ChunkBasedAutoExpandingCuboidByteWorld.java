@@ -106,20 +106,16 @@ class ChunkBasedAutoExpandingCuboidByteWorld implements CuboidByteWorld
 	private
 	ChunkPos getChunkPosFor(int x, int y, int z)
 	{
-		return new ChunkPos(
-			x >> ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SHIFT,
+		return new ChunkPos(x >> ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SHIFT,
 			y >> ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SHIFT,
-			z >> ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SHIFT
-		);
+			z >> ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SHIFT);
 	}
 
 	private
 	byte[][][] getOrCreateChunkFor(ChunkPos chunkPos)
 	{
-		return this.world.computeIfAbsent(
-			chunkPos,
-			k -> new byte[ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SIZE][ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SIZE][ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SIZE]
-		);
+		return this.world.computeIfAbsent(chunkPos,
+			k -> new byte[ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SIZE][ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SIZE][ChunkBasedAutoExpandingCuboidByteWorld.CHUNK_SIZE]);
 	}
 
 	private

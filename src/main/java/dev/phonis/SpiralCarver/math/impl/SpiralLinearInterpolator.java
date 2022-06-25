@@ -23,11 +23,8 @@ class SpiralLinearInterpolator implements Interpolator<SpiralSample>
 	public
 	SpiralSample interpolate(double percent)
 	{
-		return new SpiralSample(
-			this.heightInterpolator.interpolate(percent),
-			this.radiusInterpolator.interpolate(percent),
-			this.pathWidthInterpolator.interpolate(percent)
-		);
+		return new SpiralSample(this.heightInterpolator.interpolate(percent),
+			this.radiusInterpolator.interpolate(percent), this.pathWidthInterpolator.interpolate(percent));
 	}
 
 }

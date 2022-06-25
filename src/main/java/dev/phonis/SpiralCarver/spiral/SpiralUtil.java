@@ -33,8 +33,7 @@ class SpiralUtil
 			SpiralLinearInterpolator spiralLerper = new SpiralLinearInterpolator(currentSample, nextSample);
 			SpiralLinearInterpolator lastSpiralLerper = (lastSample == null) ? null
 																			 : new SpiralLinearInterpolator(lastSample,
-																											currentSample
-																			 );
+																				 currentSample);
 			double averageRadius = (currentSample.radius() + nextSample.radius()) / 2;
 			double arcLength     = 2 * Math.PI * averageRadius;
 			int    numSamples    = (int) (arcLength * 20);
@@ -46,10 +45,8 @@ class SpiralUtil
 	}
 
 	private static
-	void drawWall(
-		CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator spiralLerper,
-		SpiralLinearInterpolator lastSpiralLerper, int numSamples
-	)
+	void drawWall(CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator spiralLerper,
+				  SpiralLinearInterpolator lastSpiralLerper, int numSamples)
 	{
 		UnitVectorLinearInterpolator unitVectorLerper = new UnitVectorLinearInterpolator();
 		for (int s = 1; s <= numSamples; s++)
@@ -63,15 +60,13 @@ class SpiralUtil
 			Vector belowPathStart = (lastLerpedSample == null) ? unitVector.clone().multiply(lerpedSample.radius())
 																		   .setY(0) : unitVector.clone().multiply(
 				lastLerpedSample.radius() - lastLerpedSample.pathWidth()).setY(lastLerpedSample.height());
-			SpiralUtil.drawLine(
-				cuboidByteWorld, pathEnd, belowPathStart, CommandCarve.wallStart, CommandCarve.wallEnd, false);
+			SpiralUtil.drawLine(cuboidByteWorld, pathEnd, belowPathStart, CommandCarve.wallStart, CommandCarve.wallEnd,
+				false);
 		}
 	}
 
 	private static
-	void drawPath(
-		CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator spiralLerper, int numSamples
-	)
+	void drawPath(CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator spiralLerper, int numSamples)
 	{
 		UnitVectorLinearInterpolator unitVectorLerper = new UnitVectorLinearInterpolator();
 		for (int s = 1; s <= numSamples; s++)
@@ -82,20 +77,18 @@ class SpiralUtil
 			Vector pathStart = unitVector.clone().multiply(lerpedSample.radius() - lerpedSample.pathWidth())
 										 .setY(lerpedSample.height());
 			Vector pathEnd = unitVector.clone().multiply(lerpedSample.radius()).setY(lerpedSample.height());
-			SpiralUtil.drawLine(
-				cuboidByteWorld, pathStart, pathEnd, CommandCarve.pathStart, CommandCarve.pathEnd, true);
+			SpiralUtil.drawLine(cuboidByteWorld, pathStart, pathEnd, CommandCarve.pathStart, CommandCarve.pathEnd,
+				true);
 		}
 
 		SpiralUtil.drawInnerPath(cuboidByteWorld, spiralLerper);
 	}
 
 	private static
-	void drawInnerPath(
-		CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator spiralLerper
-	)
+	void drawInnerPath(CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator spiralLerper)
 	{
 		final double targetSpaceBetweenLamps = 6 * Math.sqrt(2);
-		final double offWall = Math.sqrt(2);
+		final double offWall                 = Math.sqrt(2);
 		// final double targetSpaceBetweenLamps = .05;
 		// Assuming height/radius are ints at start and end of sample
 		SpiralSample startSample           = spiralLerper.interpolate(0);
@@ -110,10 +103,10 @@ class SpiralUtil
 			int    segmentEnd   = h + 1;
 			double startPercent = SpiralUtil.getPercentThroughSpiralAtHeight(startHeight, endHeight, segmentStart);
 			double endPercent   = SpiralUtil.getPercentThroughSpiralAtHeight(startHeight, endHeight, segmentEnd);
-			double startLength = SpiralUtil.getLengthThroughSpiralAtPercent(
-				startPathCenterRadius, endPathCenterRadius, startPercent);
-			double endLength = SpiralUtil.getLengthThroughSpiralAtPercent(
-				startPathCenterRadius, endPathCenterRadius, endPercent);
+			double startLength = SpiralUtil.getLengthThroughSpiralAtPercent(startPathCenterRadius, endPathCenterRadius,
+				startPercent);
+			double endLength = SpiralUtil.getLengthThroughSpiralAtPercent(startPathCenterRadius, endPathCenterRadius,
+				endPercent);
 			double segmentLength = endLength - startLength;
 			// numSources * targetSpaceBetweenLamps = segmentLength
 			double numSourcesApproximation = segmentLength / targetSpaceBetweenLamps;
@@ -123,17 +116,17 @@ class SpiralUtil
 			for (int s = 0; s < realNumSources; s++)
 			{
 				double lengthAtSource = startLength + (realSpaceBetweenLamps / 2) + realSpaceBetweenLamps * s;
-				double percentAtSource = SpiralUtil.getPercentThroughSpiralAtLength(
-					startPathCenterRadius, endPathCenterRadius, lengthAtSource);
-				SpiralUtil.placeLightSourceAtPercentThroughSpiral(cuboidByteWorld, spiralLerper, percentAtSource, offWall);
+				double percentAtSource = SpiralUtil.getPercentThroughSpiralAtLength(startPathCenterRadius,
+					endPathCenterRadius, lengthAtSource);
+				SpiralUtil.placeLightSourceAtPercentThroughSpiral(cuboidByteWorld, spiralLerper, percentAtSource,
+					offWall);
 			}
 		}
 	}
 
 	private static
-	void placeLightSourceAtPercentThroughSpiral(
-		CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator spiralLerper, double percent, double offWall
-	)
+	void placeLightSourceAtPercentThroughSpiral(CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator spiralLerper,
+												double percent, double offWall)
 	{
 		final double                 minInnerPathLength       = 6;
 		final double                 minOuterPathForInnerPath = 10;
@@ -145,7 +138,7 @@ class SpiralUtil
 		double                       sourceHeight             = Math.ceil(sourceSample.height());
 		if (sourceSample.pathWidth() <= minOuterPathForInnerPath)
 		{
-			double middleRadius = sourceSample.radius() - sourceSample.pathWidth() / 4;
+			double middleRadius   = sourceSample.radius() - sourceSample.pathWidth() / 4;
 			Vector sourcePosition = unitVector.clone().multiply(middleRadius).setY(sourceHeight);
 			SpiralUtil.drawPathLightSourceAt(cuboidByteWorld, sourcePosition);
 			return;
@@ -180,37 +173,30 @@ class SpiralUtil
 	}
 
 	private static
-	void drawAqueducts(
-		CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator lastSpiralLerper, SpiralSample currentSample,
-		SpiralSample nextSample
-	)
+	void drawAqueducts(CuboidByteWorld cuboidByteWorld, SpiralLinearInterpolator lastSpiralLerper,
+					   SpiralSample currentSample, SpiralSample nextSample)
 	{
 		final double aqueductWidth    = 10;
 		final double aqueductHeight   = 15;
 		final double distanceFromWall = Math.sqrt(2);
 		SpiralSample aqueductStart = new SpiralSample(
 			(lastSpiralLerper == null) ? 0 : lastSpiralLerper.interpolate(0).height(),
-			currentSample.radius() + distanceFromWall, currentSample.pathWidth()
-		);
+			currentSample.radius() + distanceFromWall, currentSample.pathWidth());
 		SpiralSample aqueductEnd = new SpiralSample(
 			(lastSpiralLerper == null) ? 0 : lastSpiralLerper.interpolate(1).height(),
-			nextSample.radius() + distanceFromWall, nextSample.pathWidth()
-		);
+			nextSample.radius() + distanceFromWall, nextSample.pathWidth());
 		SpiralLinearInterpolator currentSpiralLerper = new SpiralLinearInterpolator(currentSample, nextSample);
 
 		SpiralUtil.drawAlignedAqueducts(cuboidByteWorld, aqueductWidth, aqueductHeight, aqueductStart, aqueductEnd,
-										currentSpiralLerper
-		);
+			currentSpiralLerper);
 		SpiralUtil.drawOffsetAqueducts(cuboidByteWorld, aqueductWidth, aqueductHeight, aqueductStart, aqueductEnd,
-									   currentSpiralLerper
-		);
+			currentSpiralLerper);
 	}
 
 	private static
-	void drawAlignedAqueducts(
-		CuboidByteWorld cuboidByteWorld, double aqueductWidth, double aqueductHeight, SpiralSample aqueductStart,
-		SpiralSample aqueductEnd, SpiralLinearInterpolator currentSpiralLerper
-	)
+	void drawAlignedAqueducts(CuboidByteWorld cuboidByteWorld, double aqueductWidth, double aqueductHeight,
+							  SpiralSample aqueductStart, SpiralSample aqueductEnd,
+							  SpiralLinearInterpolator currentSpiralLerper)
 	{
 		final double                 aqueductArchStart     = (aqueductHeight - (aqueductWidth / 2));
 		SpiralLinearInterpolator     aqueductLerper        = new SpiralLinearInterpolator(aqueductStart, aqueductEnd);
@@ -225,14 +211,13 @@ class SpiralUtil
 		for (int a = 1; a <= numAqueducts; a++)
 		{
 			double endLength = arcLength / (numAqueducts / (double) a);
-			double endPercent = SpiralUtil.getPercentThroughSpiralAtLength(
-				aqueductStart.radius(), aqueductEnd.radius(), endLength);
+			double endPercent = SpiralUtil.getPercentThroughSpiralAtLength(aqueductStart.radius(), aqueductEnd.radius(),
+				endLength);
 			DoubleLinearInterpolator percentLerper = new DoubleLinearInterpolator(startPercent, endPercent);
 			double pathMaxHeight = Math.max(currentSpiralLerper.interpolate(startPercent).height(),
-											currentSpiralLerper.interpolate(endPercent).height()
-			);
-			double baseMaxHeight = Math.max(
-				aqueductLerper.interpolate(startPercent).height(), aqueductLerper.interpolate(endPercent).height());
+				currentSpiralLerper.interpolate(endPercent).height());
+			double baseMaxHeight = Math.max(aqueductLerper.interpolate(startPercent).height(),
+				aqueductLerper.interpolate(endPercent).height());
 			double stacks        = 1;
 			double currentHeight = baseMaxHeight + aqueductHeight;
 			while (currentHeight + aqueductHeight < pathMaxHeight)
@@ -248,9 +233,8 @@ class SpiralUtil
 			{
 				double addedHeight = stack * aqueductHeight * 2;
 				SpiralUtil.drawLine(cuboidByteWorld, startBaseVector.clone().add(new Vector(0, addedHeight, 0)),
-									startOfArchVector.clone().add(new Vector(0, addedHeight, 0)),
-									CommandCarve.aqueductStart, CommandCarve.aqueductEnd, false
-				);
+					startOfArchVector.clone().add(new Vector(0, addedHeight, 0)), CommandCarve.aqueductStart,
+					CommandCarve.aqueductEnd, false);
 			}
 			Vector lastSampleVector = startOfArchVector;
 			for (int s = 1; s <= numSamples; s++)
@@ -266,9 +250,8 @@ class SpiralUtil
 				{
 					double addedHeight = stack * aqueductHeight * 2;
 					SpiralUtil.drawLine(cuboidByteWorld, lastSampleVector.clone().add(new Vector(0, addedHeight, 0)),
-										sampleVector.clone().add(new Vector(0, addedHeight, 0)),
-										CommandCarve.aqueductStart, CommandCarve.aqueductEnd, false
-					);
+						sampleVector.clone().add(new Vector(0, addedHeight, 0)), CommandCarve.aqueductStart,
+						CommandCarve.aqueductEnd, false);
 				}
 				lastSampleVector = sampleVector;
 			}
@@ -279,19 +262,17 @@ class SpiralUtil
 			{
 				double addedHeight = stack * aqueductHeight * 2;
 				SpiralUtil.drawLine(cuboidByteWorld, lastSampleVector.clone().add(new Vector(0, addedHeight, 0)),
-									endBaseVector.clone().add(new Vector(0, addedHeight, 0)),
-									CommandCarve.aqueductStart, CommandCarve.aqueductEnd, false
-				);
+					endBaseVector.clone().add(new Vector(0, addedHeight, 0)), CommandCarve.aqueductStart,
+					CommandCarve.aqueductEnd, false);
 			}
 			startPercent = endPercent;
 		}
 	}
 
 	private static
-	void drawOffsetAqueducts(
-		CuboidByteWorld cuboidByteWorld, double aqueductWidth, double aqueductHeight, SpiralSample aqueductStart,
-		SpiralSample aqueductEnd, SpiralLinearInterpolator currentSpiralLerper
-	)
+	void drawOffsetAqueducts(CuboidByteWorld cuboidByteWorld, double aqueductWidth, double aqueductHeight,
+							 SpiralSample aqueductStart, SpiralSample aqueductEnd,
+							 SpiralLinearInterpolator currentSpiralLerper)
 	{
 		final double                 aqueductArchStart     = (aqueductHeight - (aqueductWidth / 2));
 		SpiralLinearInterpolator     aqueductLerper        = new SpiralLinearInterpolator(aqueductStart, aqueductEnd);
@@ -306,8 +287,8 @@ class SpiralUtil
 		for (int a = 1; a <= numAqueducts; a++)
 		{
 			double endLength = arcLength / (numAqueducts / (double) a);
-			double endPercent = SpiralUtil.getPercentThroughSpiralAtLength(
-				aqueductStart.radius(), aqueductEnd.radius(), endLength);
+			double endPercent = SpiralUtil.getPercentThroughSpiralAtLength(aqueductStart.radius(), aqueductEnd.radius(),
+				endLength);
 			DoubleLinearInterpolator percentLerper   = new DoubleLinearInterpolator(startPercent, endPercent);
 			double                   middlePercent   = percentLerper.interpolate(.5);
 			SpiralSample             startBaseSample = aqueductLerper.interpolate(startPercent);
@@ -317,10 +298,9 @@ class SpiralUtil
 													   .add(new Vector(0, aqueductArchStart + aqueductWidth / 2, 0));
 			Vector lastSampleVector = middleOfArchVector;
 			double pathMaxHeight = Math.max(currentSpiralLerper.interpolate(startPercent).height(),
-											currentSpiralLerper.interpolate(middlePercent).height()
-			);
-			double baseMaxHeight = Math.max(
-				aqueductLerper.interpolate(startPercent).height(), aqueductLerper.interpolate(middlePercent).height());
+				currentSpiralLerper.interpolate(middlePercent).height());
+			double baseMaxHeight = Math.max(aqueductLerper.interpolate(startPercent).height(),
+				aqueductLerper.interpolate(middlePercent).height());
 			double stacks        = 0;
 			double currentHeight = baseMaxHeight;
 			while (currentHeight + aqueductHeight < pathMaxHeight)
@@ -341,9 +321,8 @@ class SpiralUtil
 				{
 					double addedHeight = aqueductHeight + stack * aqueductHeight * 2;
 					SpiralUtil.drawLine(cuboidByteWorld, lastSampleVector.clone().add(new Vector(0, addedHeight, 0)),
-										sampleVector.clone().add(new Vector(0, addedHeight, 0)),
-										CommandCarve.aqueductStart, CommandCarve.aqueductEnd, false
-					);
+						sampleVector.clone().add(new Vector(0, addedHeight, 0)), CommandCarve.aqueductStart,
+						CommandCarve.aqueductEnd, false);
 				}
 				lastSampleVector = sampleVector;
 			}
@@ -355,16 +334,14 @@ class SpiralUtil
 			{
 				double addedHeight = aqueductHeight + stack * aqueductHeight * 2;
 				SpiralUtil.drawLine(cuboidByteWorld, lastSampleVector.clone().add(new Vector(0, addedHeight, 0)),
-									middleBaseVector.clone().add(new Vector(0, addedHeight, 0)),
-									CommandCarve.aqueductStart, CommandCarve.aqueductEnd, false
-				);
+					middleBaseVector.clone().add(new Vector(0, addedHeight, 0)), CommandCarve.aqueductStart,
+					CommandCarve.aqueductEnd, false);
 			}
 
 			pathMaxHeight = Math.max(currentSpiralLerper.interpolate(middlePercent).height(),
-									 currentSpiralLerper.interpolate(endPercent).height()
-			);
-			baseMaxHeight = Math.max(
-				aqueductLerper.interpolate(middlePercent).height(), aqueductLerper.interpolate(endPercent).height());
+				currentSpiralLerper.interpolate(endPercent).height());
+			baseMaxHeight = Math.max(aqueductLerper.interpolate(middlePercent).height(),
+				aqueductLerper.interpolate(endPercent).height());
 			stacks        = 0;
 			currentHeight = baseMaxHeight;
 			while (currentHeight + aqueductHeight < pathMaxHeight)
@@ -385,9 +362,8 @@ class SpiralUtil
 				{
 					double addedHeight = aqueductHeight + stack * aqueductHeight * 2;
 					SpiralUtil.drawLine(cuboidByteWorld, lastSampleVector.clone().add(new Vector(0, addedHeight, 0)),
-										sampleVector.clone().add(new Vector(0, addedHeight, 0)),
-										CommandCarve.aqueductStart, CommandCarve.aqueductEnd, false
-					);
+						sampleVector.clone().add(new Vector(0, addedHeight, 0)), CommandCarve.aqueductStart,
+						CommandCarve.aqueductEnd, false);
 				}
 				lastSampleVector = sampleVector;
 			}
@@ -413,9 +389,8 @@ class SpiralUtil
 	}
 
 	private static
-	void drawLine(
-		CuboidByteWorld cuboidByteWorld, Vector start, Vector finish, byte randStart, byte randEnd, boolean step
-	)
+	void drawLine(CuboidByteWorld cuboidByteWorld, Vector start, Vector finish, byte randStart, byte randEnd,
+				  boolean step)
 	{
 		int         startX           = (int) Math.floor(start.getX());
 		int         startY           = (int) Math.floor(start.getY());

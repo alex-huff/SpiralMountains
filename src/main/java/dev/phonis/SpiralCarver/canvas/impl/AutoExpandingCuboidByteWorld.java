@@ -15,10 +15,7 @@ class AutoExpandingCuboidByteWorld implements CuboidByteWorld
 	AutoExpandingCuboidByteWorld(int startSize)
 	{
 		this.logicalBounds = new BoundingBox3D(0, 0, 0, 0, 0, 0);
-		this.realBounds    = new BoundingBox3D(-startSize, startSize,
-			-startSize, startSize,
-			-startSize, startSize
-		);
+		this.realBounds    = new BoundingBox3D(-startSize, startSize, -startSize, startSize, -startSize, startSize);
 		world              = new byte[this.getRealXAxisSize()][this.getRealYAxisSize()][this.getRealZAxisSize()];
 	}
 
@@ -112,11 +109,10 @@ class AutoExpandingCuboidByteWorld implements CuboidByteWorld
 		int extraOnEachSide = (int) Math.ceil(.15D * this.getBlocksBetween(newLogicalMaxX, newLogicalMinX));
 		int newRealMinX     = newLogicalMinX - extraOnEachSide;
 		int newRealMaxX     = newLogicalMaxX + extraOnEachSide;
-		byte[][][] newArray =
-			new byte[this.getBlocksBetween(newRealMaxX, newRealMinX)][this.getRealYAxisSize()][this.getRealZAxisSize()];
+		byte[][][] newArray = new byte[this.getBlocksBetween(newRealMaxX,
+			newRealMinX)][this.getRealYAxisSize()][this.getRealZAxisSize()];
 		System.arraycopy(this.world, this.getRealIndexOfX(this.logicalBounds.getMinX()), newArray,
-			this.logicalBounds.getMinX() - newRealMinX, this.getLogicalXAxisSize()
-		);
+			this.logicalBounds.getMinX() - newRealMinX, this.getLogicalXAxisSize());
 		this.world = newArray;
 		this.logicalBounds.setMinX(newLogicalMinX);
 		this.logicalBounds.setMaxX(newLogicalMaxX);
@@ -148,13 +144,11 @@ class AutoExpandingCuboidByteWorld implements CuboidByteWorld
 		for (int x = this.realBounds.getMinX(); x <= this.realBounds.getMaxX(); x++)
 		{
 			int realXIndex = this.getRealIndexOfX(x);
-			byte[][] newArray =
-				new byte[newYAxisSize][this.getRealZAxisSize()];
+			byte[][] newArray = new byte[newYAxisSize][this.getRealZAxisSize()];
 			if (this.numInBounds(x, this.logicalBounds.getMinX(), this.logicalBounds.getMaxX()))
 			{
 				System.arraycopy(this.world[realXIndex], this.getRealIndexOfY(this.logicalBounds.getMinY()), newArray,
-					this.logicalBounds.getMinY() - newRealMinY, this.getLogicalYAxisSize()
-				);
+					this.logicalBounds.getMinY() - newRealMinY, this.getLogicalYAxisSize());
 			}
 			this.world[realXIndex] = newArray;
 		}
@@ -191,16 +185,13 @@ class AutoExpandingCuboidByteWorld implements CuboidByteWorld
 			for (int y = this.realBounds.getMinY(); y <= this.realBounds.getMaxY(); y++)
 			{
 				int realYIndex = this.getRealIndexOfY(y);
-				byte[] newArray =
-					new byte[newZAxisSize];
+				byte[] newArray = new byte[newZAxisSize];
 				if (this.numInBounds(x, this.logicalBounds.getMinX(), this.logicalBounds.getMaxX()) &&
 					this.numInBounds(y, this.logicalBounds.getMinY(), this.logicalBounds.getMaxY()))
 				{
 					System.arraycopy(this.world[realXIndex][realYIndex],
-						this.getRealIndexOfZ(this.logicalBounds.getMinZ()),
-						newArray,
-						this.logicalBounds.getMinZ() - newRealMinZ, this.getLogicalZAxisSize()
-					);
+						this.getRealIndexOfZ(this.logicalBounds.getMinZ()), newArray,
+						this.logicalBounds.getMinZ() - newRealMinZ, this.getLogicalZAxisSize());
 				}
 				this.world[realXIndex][realYIndex] = newArray;
 			}
